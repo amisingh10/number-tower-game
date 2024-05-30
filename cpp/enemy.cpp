@@ -1,7 +1,7 @@
 #include "enemy.h"
 
 
-Enemy::Enemy(const std::vector<std::vector<int>>& digits, const std::vector<Operation> operations, int numOfMasks, int damage, int speed, bool destroyed)
+Enemy::Enemy(const std::vector<std::vector<int>>& digits, const std::vector<Operation>& operations, int numOfMasks, int damage, int speed)
     : digits(digits), operations(operations), numOfMasks(numOfMasks), damage(damage), speed(speed), destroyed(destroyed) {}
 
 std::vector<std::vector<int>> Enemy::getDigits() const {
@@ -28,8 +28,8 @@ bool Enemy::isDestroyed() const {
     return destroyed;
 }
 
-void Enemy::attackPlayer() {
-    // attack logic (need player first)
+void Enemy::attackPlayer(Player& player) {
+    player.loseHealth(damage);
 }
 
 void Enemy::loseMask() {
