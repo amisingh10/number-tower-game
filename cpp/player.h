@@ -13,7 +13,7 @@ public:
     Player(int health);
 
     int getHealth() const;
-
+    int getScore() const;
     void gainHealth(int amount);
     void loseHealth(int amount);
     void addScore(int amount);
