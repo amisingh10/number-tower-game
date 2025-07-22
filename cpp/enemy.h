@@ -2,33 +2,22 @@
 #include <vector>
 #include <string>
 #include "player.h"
-#include <sstream>
-
-enum class Operation {
-    ADD,
-    SUBTRACT,
-    MULTIPLY,
-    DIVIDE
-};
+#include "mask.h"
 
 class Enemy {
 private:
-    std::vector<std::vector<int>> digits;
-    std::vector<Operation> operations;
-    int distanceToPlayer = 10;
+    std::vector<Mask> masks;
+    int distanceToPlayer;
     int damage;
     int speed;
-    bool destroyed = false;
+    bool destroyed;
 
 public:
-    Enemy(const std::vector<std::vector<int>>& digits,
-          const std::vector<Operation>& operations,
+    Enemy(const std::vector<Mask>& masks,
           int damage,
           int speed,
           int distanceToPlayer = 10);
 
-    std::vector<std::vector<int>> getDigits() const;
-    std::vector<Operation> getOperations() const;
     int countMasks() const;
     int getDamage() const;
     int getSpeed() const;

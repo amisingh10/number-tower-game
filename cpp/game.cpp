@@ -1,4 +1,5 @@
 #include "game.h"
+#include "mask.h"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -13,7 +14,6 @@ Game::Game(Difficulty difficulty)
 
 void Game::start() {
     std::cout << "Game start\n";
-
     while (!gameOver) {
         draw();
         handleInput();
@@ -21,13 +21,11 @@ void Game::start() {
         checkAnswer();
         checkCollision();
     }
-
     std::cout << "Game over! Final Score: " << player.getScore() << "\n";
 }
 
 void Game::update() {
     tickCount++;
-
     for (Enemy& enemy : enemies) {
         enemy.advance();
     }
@@ -37,29 +35,26 @@ void Game::update() {
     }
 }
 
-std::pair<std::vector<std::vector<int>>, std::vector<Operation>> Game::generateMasks(int num) {
-    std::vector<std::vector<int>> digits;
-    std::vector<Operation> operations;
+std::vector<Mask> Game::generateMasks(int num) {
+    std::vector<Mask> masks;
+    masks.reserve(num);
 
     for (int i = 0; i < num; ++i) {
-        int a = std::rand() % 10 + 1;
-        int b = std::rand() % 10 + 1;
-        Operation op = static_cast<Operation>(std::rand() % 4);
-        digits.push_back({a, b});
-        operations.push_back(op);
+        Operator op = static_cast<Operator>(std::rand() % 4);
+        int numDigits = 2 + (std::rand() % 2);  // 2 or 3 digits
+        masks.emplace_back(Mask::generateMask(numDigits, op));
     }
 
-    return {digits, operations};
+    return masks;
 }
 
 void Game::spawn() {
     int damage = 10 + (level * 2);
     int masks = 1 + (level / 2);
     int speed = 1 + (level / 5);
+    auto enemyMasks = generateMasks(masks);
 
-    auto [digits, operations] = generateMasks(masks);
-
-    enemies.emplace_back(digits, operations, damage, speed);
+    enemies.emplace_back(enemyMasks, damage, speed);
 }
 
 void Game::handleInput() {
@@ -85,8 +80,7 @@ void Game::checkAnswer() {
 void Game::checkCollision() {
     for (auto it = enemies.begin(); it != enemies.end();) {
         if (it->getDistance() <= 0) {
-            int remaining = it->countMasks();
-            int totalDamage = it->getDamage() * remaining;
+            int totalDamage = it->getDamage() * it->countMasks();
             player.loseHealth(totalDamage);
             it = enemies.erase(it);
         } else {

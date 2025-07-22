@@ -3,7 +3,6 @@
 #include "enemy.h"
 #include <vector>
 #include <string>
-#include <utility>
 
 enum class Difficulty { EASY, NORMAL, HARD };
 
@@ -17,7 +16,7 @@ private:
     int tickCount;
     std::string answerBuffer;
 
-    std::pair<std::vector<std::vector<int>>, std::vector<Operation>> generateMasks(int num);
+    std::vector<Mask> generateMasks(int num);
 
 public:
     Game(Difficulty difficulty);
